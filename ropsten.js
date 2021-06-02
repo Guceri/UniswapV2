@@ -169,6 +169,12 @@ async function SwapTokenForEth() {
   })
 }
 
+async function ApproveTokenSwap() {
+  await link.methods.approve(LINK_ETH, token_trade_amount).send({from: account}).then((receipt) => {
+    console.log("Approve for Transfer...")
+  }) 
+}
+
 //uniswapv2()
 //balance()
 //SwapEthForToken()
