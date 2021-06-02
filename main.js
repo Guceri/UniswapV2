@@ -16,51 +16,36 @@ Amount of Dai for 1 ETH: 2589.293435710513165399
 New Mid-Price: 2596.9302246521474
 
 */
-
 require('dotenv').config()
-const express = require('express')
-const http = require('http')
 const Web3 = require('web3')
 const moment = require('moment')
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const _ = require('lodash')
-const DAI_ABI = require('./abi/Dai.json')
 
-//Token Addresses
-const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+//abis
+const FACTORY_ABI = require('./abi/UniswapV2Factory.json')
+const UNISWAP_PAIR_ABI = require('./abi/UniswapV2Pair.json')
+const UNISWAP_ROUTER_ABI = require('./abi/UniswapV2Router.json')
 
-//UniswapV2 Contracts
-const FACTORY_ABI = require('./abi/UniswapV2Factory.json');
-const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
-
-const UNISWAP_PAIR_ABI = require('./abi/UniswapV2Pair.json'); 
-//Pair Addresses UniswapV2Pair.sol
-const DAI_ETH = '0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11';
-
-const UNISWAP_ROUTER_ABI = require('./abi/UniswapV2Router.json');
+//MainNet Addresses
+const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+const DAI_ETH = '0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11'
+const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 
-//================================================================================================================================
-// Server
-const PORT = process.env.PORT || 5000
-const app = express(); 
-const server = http.createServer(app).listen(PORT, () => console.log(`Listening on ${ PORT }`))
-//================================================================================================================================
-// Web3 
-const web3 = new Web3(new HDWalletProvider(process.env.PRIVATE_KEY, process.env.RPC_URL) )
-//================================================================================================================================
-const factory = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
-const v2pair = new web3.eth.Contract(UNISWAP_PAIR_ABI, DAI_ETH);
+//web3
+const web3 = new Web3(new HDWalletProvider(process.env.PRIVATE_KEY, process.env.RPC_URL_MAINNET) )
+
+//contracts
+const factory = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS)
+const v2pair = new web3.eth.Contract(UNISWAP_PAIR_ABI, DAI_ETH)
 const router = new web3.eth.Contract(UNISWAP_ROUTER_ABI, ROUTER_ADDRESS)
 
 async function uniswapv2() {
-
   //grab a specific pair contract address
-  const pair = await factory.methods.getPair(DAI_ADDRESS, WETH_ADDRESS).call();
+  const pair = await factory.methods.getPair(DAI_ADDRESS, WETH_ADDRESS).call()
   console.log("DAI/ETH Pair address: "+ pair)
-
-  //TODO: key:value store might make the most sense here
   //returns token address of token0 (Dai)
   const token0 = await v2pair.methods.token0().call()
   //returns token address of token1 (WETH)
@@ -97,6 +82,4 @@ async function uniswapv2() {
 
 }
 
-uniswapv2();
-
-//================================================================================================================================
+uniswapv2()

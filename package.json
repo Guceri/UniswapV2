@@ -1,5 +1,5 @@
 {
-  "name": "UniswapV2",
+  "name": "uniswapv2",
   "version": "1.0.0",
   "description": "UniswapV2 Trading Tool",
   "main": "index.js",
@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@truffle/hdwallet-provider": "1.4.0",
-    "@uniswap/sdk": "^3.0.3",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "console.table": "^0.10.0",
