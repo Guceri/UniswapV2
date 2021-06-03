@@ -14,8 +14,8 @@ Theo Price_2: 2597.238700672181125015
 Amount of Dai for 1 ETH: 2589.293435710513165399
 New Mid-Price: 2596.9302246521474
 
-TODO: Create TokenToEth Transaction type (label functions properly)
-TODO: Make swap functions take inputs to make them more robust
+TODO: ETHtoToken Swap
+
 
 */
 require('dotenv').config()
@@ -154,30 +154,30 @@ async function SwapTokenForEth() {
   const path = [LINK_ADDRESS, WETH_ADDRESS]
   const to = account
   console.log('Performing swap...')
-  await router.methods.swapExactTokensForETH(
-    token_trade_amount,
-    amountOutMin,
-    path,
-    to,
-    deadline
-  ).send(settings).on('transactionHash', (hash => {
-    console.log('Transaction Hash: ' + hash)
-  })).then ((receipt) => {
-    console.log("Transaction Complete!")
-    let gasUsed = new BN(receipt.gasUsed).mul(new BN(gasPrice)).toString()
-    console.log('Total Gas Used: ' + web3.utils.fromWei(gasUsed,'Gwei') + " ETH")
+
+  //Approve token transferFrom for router contract
+  await link.methods.approve(ROUTER_ADDRESS, token_trade_amount).send({from: account}).on('transactionHash', async (hash) => {
+    await router.methods.swapExactTokensForETH(
+      token_trade_amount,
+      amountOutMin,
+      path,
+      to,
+      deadline
+    ).send(settings).on('transactionHash', (hash => {
+      console.log('Transaction Hash: ' + hash)
+    })).then ((receipt) => {
+      console.log("Transaction Complete!")
+      let gasUsed = new BN(receipt.gasUsed).mul(new BN(gasPrice)).toString()
+      console.log('Total Gas Used: ' + web3.utils.fromWei(gasUsed,'Gwei') + " ETH")
+    })
   })
+
+
 }
 
-async function ApproveTokenSwap() {
-  await link.methods.approve(LINK_ETH, token_trade_amount).send({from: account}).then((receipt) => {
-    console.log("Approve for Transfer...")
-  }) 
-}
 
 //uniswapv2()
 //balance()
 //SwapEthForToken()
 SwapTokenForEth()
-
 
