@@ -52,7 +52,13 @@ const eth_trade_amount = web3.utils.toWei('.01', 'ether')
 const token_trade_amount = web3.utils.toWei('.02', 'ether')
 const account = process.env.ACCOUNT
 const gasPrice = '50'//Gwei
-const gasLimit = 8000000
+const gasLimit = 200000
+/*
+Note: 
+Miners preference is Higher Gas Price and Lower Gas Limit
+To High a gas limit could spend unecessary funds on a failed transaction
+*/
+
 //Slippage is hard coded to 1%
 
 
